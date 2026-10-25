@@ -1,23 +1,26 @@
 import pandas as pd
 
-# Extract: Create sample sales data
-data = {
-    "order_id": [101, 102, 103, 104, 105],
-    "product": ["Laptop", "Phone", "Tablet", "Phone", "Laptop"],
-    "quantity": [2, 3, 1, 2, 1],
-    "price": [50000, 15000, 20000, 15000, 50000]
-}
+# Extract: Read sales data from CSV
+df = pd.read_csv("sample_sales.csv")
 
-df = pd.DataFrame(data)
+print("Original Sales Data:")
+print(df)
 
-# Transform: Calculate total sales
+# Transform: Remove duplicates and invalid records
+df = df.drop_duplicates()
+df = df.dropna()
+
+df = df[df["quantity"] > 0]
+df = df[df["price"] >= 0]
+
+# Calculate total sales
 df["total_sales"] = df["quantity"] * df["price"]
 
-# Data quality: Remove duplicate records
-df = df.drop_duplicates()
-
-# Load: Save processed data to CSV
+# Load: Save processed data
 df.to_csv("processed_sales.csv", index=False)
 
-print("Sales ETL pipeline completed successfully!")
+print("\nProcessed Sales Data:")
 print(df)
+
+print("\nTotal Revenue:", df["total_sales"].sum())
+print("ETL pipeline completed successfully!")
